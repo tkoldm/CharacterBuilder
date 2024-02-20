@@ -1,6 +1,4 @@
-﻿using Domain.Exceptions;
-
-namespace Domain.Entities.InventoryEntities;
+﻿namespace Domain.Entities.InventoryEntities;
 
 /// <summary>
 /// Компонент/ингридиент

@@ -26,7 +26,7 @@ public class Inventory
         Components = components ?? new  List<Component>();
     }
 
-    public float GetWight()
+    public float GetWeight()
     {
         return Armors.Select(a => a.Weight).Sum() + Weapons.Select(w => w.Weight).Sum() +
                Equipments.Select(e => e.Weight).Sum() + Components.Select(c => c.Weight).Sum();

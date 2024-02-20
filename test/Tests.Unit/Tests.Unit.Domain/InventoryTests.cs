@@ -78,19 +78,17 @@ public class InventoryTests
         Assert.NotNull(inventory.Equipments);
         Assert.NotNull(inventory.Components);
     }
-
+    
     [Theory]
-    [MemberData(nameof(GetInventoryData))]
-    public void GetWeight_ValidData_CalculatesWeight(Armor[] armors, Weapon[] weapons, Equipment[] equipments,
-        Component[] components)
+    [MemberData(nameof(GetInventoryDataWithWeight))]
+    public void CheckWeightCalculation(Armor[] armors, Weapon[] weapons, Equipment[] equipments,
+        Component[] components, float expectedResult)
     {
         var inventory = new Inventory(armors, weapons, equipments, components);
-        var expectedWeight = armors.Select(a => a.Weight).Sum() + weapons.Select(w => w.Weight).Sum() +
-                             equipments.Select(e => e.Weight).Sum() + components.Select(w => w.Weight).Sum();
-        var resultWeight = inventory.GetWight();
-        Assert.Equal(expectedWeight, resultWeight);
+        var resultWeight = inventory.GetWeight();
+        Assert.Equal(expectedResult, resultWeight);
     }
-
+    
     public static IEnumerable<object[]> GetWeaponData()
     {
         yield return
@@ -120,7 +118,7 @@ public class InventoryTests
             new List<Weapon>
             {
                 new("Гледдиф", 3, 689, 0, "3d6+2", 5, 2,
-                    [new WeaponEffect(Effect.Long, "Этим оружием можно атаковать цель в пределах 2х метров", null)],
+                    [new WeaponEffect(Effect.Long, "Этим оружием можно атаковать цель в пределах 2х метров")],
                     WeaponSize.Large, 0)
             },
             new List<Equipment>
@@ -131,6 +129,33 @@ public class InventoryTests
             {
                 new("Свечи *5", 0.5f, 10)
             }
+        ];
+    }
+
+    public static IEnumerable<object[]> GetInventoryDataWithWeight()
+    {
+        yield return
+        [
+            new List<Armor>
+            {
+                new("Аэдирнский Гамбезон", 1.5f, 75, BodyPart.Body, 5)
+            },
+
+            new List<Weapon>
+            {
+                new("Гледдиф", 3, 689, 0, "3d6+2", 5, 2,
+                    [new WeaponEffect(Effect.Long, "Этим оружием можно атаковать цель в пределах 2х метров")],
+                    WeaponSize.Large, 0)
+            },
+            new List<Equipment>
+            {
+                new("Письменные принадлежности", 1, 50, "Позволяют писать записки, письма и т.д.")
+            },
+            new List<Component>
+            {
+                new("Свечи *5", 0.5f, 10)
+            },
+            6
         ];
     }
 }

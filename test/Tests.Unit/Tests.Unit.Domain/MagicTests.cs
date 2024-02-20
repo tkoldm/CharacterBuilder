@@ -30,7 +30,7 @@ public class MagicTests
     }
 
     [Theory]
-    [InlineData("Гидромантия", 5, "Эффект ритуала", 2, 15, "4 раунда", new [] {"Чаша с водой"})]
+    [InlineData("Гидромантия", 5, "Эффект ритуала", 2, 15, "4 раунда", new[] { "Чаша с водой" })]
     public void Ctor_ValidData_CreatesNewRitualInstance(string name, byte cost, string effect, byte prepareTime,
         byte complexity, string duration,
         ICollection<string> ingredients)
@@ -44,14 +44,40 @@ public class MagicTests
         Assert.Equal(duration, ritual.Duration);
         Assert.Equal(ingredients.Count, ritual.Ingredients.Count);
     }
+
+    [Fact]
+    public void Ctor_ValidData_CreatesNewMagicInstance()
+    {
+        var magic = new Magic();
+        Assert.Empty(magic.Curses);
+        Assert.Empty(magic.Spells);
+        Assert.Empty(magic.Rituals);
+    }
+
     [Theory]
     [MemberData(nameof(GetData))]
-    public void Ctor_ValidData_CreatesNewMagicInstance(Curse[] curses, Spell[] spells, Ritual[] rituals)
+    public void AddCollectionOfMagicData(Curse[] curses, Spell[] spells, Ritual[] rituals)
     {
-        var magic = new Magic(curses, spells, rituals);
-        Assert.Equal(curses.Length, magic.Curses.Count);
-        Assert.Equal(spells.Length, magic.Spells.Count);
+        var magic = new Magic();
+        magic.AddRituals(rituals);
         Assert.Equal(rituals.Length, magic.Rituals.Count);
+        magic.AddSpells(spells);
+        Assert.Equal(spells.Length, magic.Spells.Count);
+        magic.AddCurses(curses);
+        Assert.Equal(curses.Length, magic.Curses.Count);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetData))]
+    public void AddSingleMagicData(Curse[] curses, Spell[] spells, Ritual[] rituals)
+    {
+        var magic = new Magic();
+        magic.AddRitual(rituals.First());
+        Assert.Single(magic.Rituals);
+        magic.AddSpell(spells.First());
+        Assert.Single(magic.Spells);
+        magic.AddCurse(curses.First());
+        Assert.Single(magic.Curses);
     }
 
     [Fact]
@@ -76,7 +102,7 @@ public class MagicTests
         var createAction = () => new Curse("Теневая порча", 2, null);
         Assert.Throws<IncorrectValueException>(createAction);
     }
-    
+
     public static IEnumerable<object[]> GetData()
     {
         yield return
@@ -92,7 +118,7 @@ public class MagicTests
             },
             new List<Ritual>
             {
-                new("Гидромантия", 5, "Эффект ритуала", 2, 15, "4 раунда", new [] {"Чаша с водой"})
+                new("Гидромантия", 5, "Эффект ритуала", 2, 15, "4 раунда", new[] { "Чаша с водой" })
             }
         ];
     }
